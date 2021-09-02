@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load mptt_tags %}
+{% block head %}
+    <style>
+        ul, #myUL {
+            list-style-type: none;
+        }
+
+        #myUL {
+            margin: 0;
+            padding: 0;
+        }
+
+        .caret {
+            cursor: pointer;
+            -webkit-user-select: none; /* Safari 3.1+ */
+            -moz-user-select: none; /* Firefox 2+ */
+            -ms-user-select: none; /* IE 10+ */
+            user-select: none;
+        }
+
+        .caret::before {
+            content: "\25B6";
+            color: black;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        .caret-down::before {
+            -ms-transform: rotate(90deg); /* IE 9 */
+            -webkit-transform: rotate(90deg); /* Safari */
+        ' transform: rotate(90 deg);
+        }
+
+        .nested {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}
+<title>Employees</title>
+{% endblock %}
+
+{% block content %}
+    <div class="container pt-5 pb-5">
+        <h2 class="text-center">Employees</h2>
+        <div class="mt-5">
+            {% recursetree employees %}
+                <ul id="myUL">
+                    <li><span class="{% if not node.is_leaf_node %}caret{% endif %}">{{ node }}</span>
+                        {% if not node.is_leaf_node %}
+                            <ul class="nested">
+                                {{ children }}
+                            </ul>
+                        {% endif %}
+                    </li>
+                </ul>
+            {% endrecursetree %}
+        </div>
+
+    </div>
+    <script>
+        var toggler = document.getElementsByClassName("caret");
+        var i;
+
+        for (i = 0; i < toggler.length; i++) {
+            toggler[i].addEventListener("click", function () {
+                this.parentElement.querySelector(".nested").classList.toggle("active");
+                this.classList.toggle("caret-down");
+            });
+        }
+    </script>
+
+
+{% endblock %}
